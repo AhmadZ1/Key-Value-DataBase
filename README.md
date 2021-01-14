@@ -7,3 +7,5 @@ Now, if you haven't created a database with the given name yet, you need to do m
 Then you can add keys and values by add_key(key, value) method, delete existing keys by delete_key(key) method, and override existing keys by override(key, new_value).
 Finally, the most important thing is to save your database by using my_db.save(), for safety, put it in the last line of your code when you start working, to not forget it. If you did not call my_db.save(), all your changes and modifications will not be saved.
 You can delete the database that you are working on by using my_db.delete_database() method.
+
+You can use this database to store many things, like my_db.add_key("username", ["password", "email", "location", "id"]) or many other uses.
