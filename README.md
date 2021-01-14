@@ -9,3 +9,8 @@ Finally, the most important thing is to save your database by using my_db.save()
 You can delete the database that you are working on by using my_db.delete_database() method.
 
 You can use this database to store many things, like my_db.add_key("username", ["password", "email", "location", "id"]) or many other uses.
+
+
+
+
+pip command to download from cmd/terminal: pip install keyvalue-database==0.0.1
