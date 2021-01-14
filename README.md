@@ -1,16 +1,21 @@
 # Key-Value-DataBase
 This is a way to create simple key-value databases for simple tasks.
 
-To use this key-value database, you first need to create a folder to place it in (you can place it anywhere on your pc, but it's better to use a specific folder for it).
-Then, you just copy the path for the place you want to store it in, instantiate a DataBase, and pass the path and name you want as parameters.(my_db = DataBase(db_path, db_name)).
-Now, if you haven't created a database with the given name yet, you need to do my_db.create(). However, if you already have a database with the same name, you just do my_db.load().
-Then you can add keys and values by add_key(key, value) method, delete existing keys by delete_key(key) method, and override existing keys by override(key, new_value).
-Finally, the most important thing is to save your database by using my_db.save(), for safety, put it in the last line of your code when you start working, to not forget it. If you did not call my_db.save(), all your changes and modifications will not be saved.
-You can delete the database that you are working on by using my_db.delete_database() method.
+To initialize the DataBase, you need to specify the path that you want it to be in, and give it a name.
+If you haven't created the database yet, simply create it by calling this create() method, and a database 
+with the name you gave it before will be created. 
+If you have already created a database with the name you passed, you need to load it by this load() method.
+Note that you don't need to call load() after calling create() for the first time.
+To add keys and values to your database, simply call add_key(key, value) method.
+To override an existing key, use override(key, new_value) method.
+To delete a key from the database, call delete_key(key) method.
+To view the keys and values pf your database, use display() method.
+Finally, don't forget to save the database using save() method, if you forget to save it, all the changes
+won't be saved and you need to work again, so be careful.
+However, you can enable autosaving by calling enable_autosave(), and you can disable it by calling disable_autosave().
+Note that enabling autosave is not recommended for big databases (rows >= 10000), manual saving it better.
 
 You can use this database to store many things, like my_db.add_key("username", ["password", "email", "location", "id"]) or many other uses.
 
 
-
-
-pip command to download from cmd/terminal: pip install keyvalue-database==0.0.1
+pip command to download from cmd/terminal: pip install keyvalue-database
