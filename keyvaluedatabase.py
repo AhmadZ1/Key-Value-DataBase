@@ -17,17 +17,27 @@ import sys
 # Note that enabling autosave is not recommended for big databases (rows >= 10000), manual saving it better.
 
 
+# If you want to create the database in the current folder, just put the path as empty string and set current_directory to True, for example:
+# db = DataBase("", "MyDb", current_directory=True)
+
+
 class DataBase:
-    def __init__(self, path, name):
+    def __init__(self, path, name, current_directory=False):
         """Initializes a DataBase with a path and name"""
         self.path = path
         self.name = name
         self.auto = False
+        self.curr = current_directory
 
     
     def create(self):
         """Creates the database in the path passed before, and gives it the name you passed before"""
         try:
+            if self.curr:
+                file = open(self.name + ".py", "w+")
+                file.write("DataBase = {}")
+                file.close()
+                return
             full_path = self.path + '\\' + self.name +".py"
             file = open(full_path, "w+")
             file.write("DataBase = {}")
@@ -40,6 +50,14 @@ class DataBase:
    
     def load(self):
         """Loads an existing database, with the name you passed when instantiated it"""
+        try:
+            if self.curr:
+                database = __import__(self.name)
+                self.db = database.DataBase
+                return
+        except ImportError as msg:
+            print(msg)
+        
         try:
             sys.path.insert(1, self.path)
         except Error as msg:
@@ -135,4 +153,3 @@ class DataBase:
 
     def __str__(self):
         return "<Key-Value DataBase: " + str(len(self.db)) + " row(s)>"
-
