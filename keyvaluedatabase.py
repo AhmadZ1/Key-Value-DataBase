@@ -1,16 +1,18 @@
-import sys
+import sys, os
 
 # Key-Value DataBase
 
 # To initialize the DataBase, you need to specify the path that you want it to be in, and give it a name.
-# If you haven't created the database yet, simply create it by calling this create() method, and a database 
-# with the name you gave it before will be created. 
-# If you have already created a database with the name you passed, you need to load it by this load() method.
-# Note that you don't need to call load() after calling create() for the first time.
-# To add keys and values to your database, simply call add_key(key, value) method.
-# To override an existing key, use override(key, new_value) method.
-# To delete a key from the database, call delete_key(key) method.
+# It will automatically create/load it, depending on whether it's created or not.
+# To add keys and values to your database, simply call add(key, value) method.
+# To override an existing key, use change(key, new_value) method.
+# To delete a key from the database, call delete(key) method.
 # To view the keys and values pf your database, use display() method.
+# To get the value of a certain key, use get(key) method.
+# To check if a key is found in database or not, use isfound(key) method.
+# To clear all the rows in the database, use clear_all().
+# To delete the database you are working with, call delete_this_database() method.
+# To delete another database, use deleteDataBase(directory, name) function, where directory is where you store the database, and name is its name
 # Finally, don't forget to save the database using save() method, if you forget to save it, all the changes
 # won't be saved and you need to work again, so be careful.
 # However, you can enable autosaving by calling enable_autosave(), and you can disable it by calling disable_autosave().
@@ -22,34 +24,48 @@ import sys
 
 
 class DataBase:
-    def __init__(self, path, name, current_directory=False):
+    def __init__(self, path='', name='', current_directory=False):
         """Initializes a DataBase with a path and name"""
-        self.path = path
+        self.dir = path
         self.name = name
         self.auto = False
         self.curr = current_directory
+        if self.curr: self.path = self.name+".py"
+        else: self.path = path + "\\" + self.name + ".py"
+        if self.exist():
+            self.load()
+        else:
+            self.create()
+            self.db = {}
 
     
+    def exist(self):
+        """Checks if the current database exists or not"""
+        return os.path.isfile(self.path)
+
+
+
     def create(self):
         """Creates the database in the path passed before, and gives it the name you passed before"""
+        if os.path.isfile(self.path):
+            raise Exception("The database is already created, please use load() instead of create()")
         try:
             if self.curr:
-                file = open(self.name + ".py", "w+")
+                file = open(self.path, "w+")
                 file.write("DataBase = {}")
                 file.close()
                 return
-            full_path = self.path + '\\' + self.name +".py"
-            file = open(full_path, "w+")
+            file = open(self.path, "w+")
             file.write("DataBase = {}")
             file.close()
-        except Error as msg:
+        except FileNotFoundError as msg:
             print(msg)
-
-        self.load()
 
    
     def load(self):
         """Loads an existing database, with the name you passed when instantiated it"""
+        if not os.path.isfile(self.path):
+            raise Exception("The database is not created yet, please use create() instead of load()")
         try:
             if self.curr:
                 database = __import__(self.name)
@@ -59,8 +75,8 @@ class DataBase:
             print(msg)
         
         try:
-            sys.path.insert(1, self.path)
-        except Error as msg:
+            sys.path.insert(1, self.dir)
+        except FileNotFoundError as msg:
             print(msg)
 
         try:
@@ -69,10 +85,8 @@ class DataBase:
         except ImportError as msg:
             print(msg)
 
-        self.db = database.DataBase
-
     
-    def add_key(self, key, value):
+    def add(self, key, value):
         """Add key with corresponding value to the database"""
         try:
             if self.db.get(key):
@@ -85,7 +99,16 @@ class DataBase:
             print(msg)
 
 
-    def override(self, key, new_value):
+    def add_keys(self, dictionary):
+        """Add multiple keys in one time"""
+        try:
+            for key in dictionary:
+                self.db[key] = dictionary[key]
+        except KeyError as msg:
+            print("Key Error: " + msg)
+
+
+    def change(self, key, new_value):
         """Overrides existing keys' values by new_value"""
         try:
             if not self.db.get(key):
@@ -99,7 +122,7 @@ class DataBase:
             print(msg)
 
     
-    def delete_key(self, key):
+    def delete(self, key):
         """Deletes the specified key"""
         try:
             del self.db[key]
@@ -109,12 +132,30 @@ class DataBase:
             print(msg)
 
 
-    def get_key(self, key):
+    def get(self, key):
         """Returns the value of the passed key"""
-        try:
-            return self.db[key]
-        except KeyError as msg:
-            print(msg)
+        assert(self.isfound(key))
+        return self.db[key]
+
+
+    def get_keys(self, *args):
+        """Returns a sub-database of the given keys"""
+        sub_db = {}
+        for key in args:
+            sub_db[key] = self.db[key]
+
+        return sub_db
+
+
+    def isfound(self, key):
+        """Returns a bool if the key is found in the database or not"""
+        return self.db.get(key)
+
+
+    def clear_all(self):
+        """Clears all the rows of the database"""
+        self.db = {}
+        self.save()
 
 
     def display(self):
@@ -123,33 +164,64 @@ class DataBase:
             print(key, ':', value)
 
 
-    def delete_database(self):
+    def delete_this_database(self):
         """Deletes the current database you are working with"""
-        make_sure = input("Are you sure you want to delete the DataBase '" + self.name +"'?\nType yes to confirm.\n")
-        if make_sure.lower() != "yes": return
         try:
             import os
-            os.remove(self.path+"\\"+self.name+".py")
+            if not self.curr: os.remove(self.path+"\\"+self.name+".py")
+            else: os.remove(self.name+".py")
             print(f"The DataBase {self.name} has been deleted.")
-        except:
-            raise NameError("Please make sure the database you entered exists")
+        except FileNotFoundError as msg:
+            raise FileNotFoundError(msg)
 
 
     def enable_autosave(self):
+        """Enables auto saving every time you make a change"""
         self.auto = True
 
 
     def disable_autosave(self):
+        """Disables auto saving"""
         self.auto = False
 
 
     def save(self):
         """Saves the database, notice that without saving it, nothing in the database will change so be careful"""
-        file = open(self.path +"\\" + self.name + ".py", "w+")
+        file = open(self.path, "w+")
         file.write("DataBase = ")
         file.write(str(self.db))
         file.close()
 
 
+    def copy(self, other):
+        """Copies the other database into the current database, which will remove it"""
+        self.db = other.db
+
+
+    def merge(self, other, path, name, curr=False):
+        """Merges two databases into one
+        Notice that if there exist two keys which are the same, one of them will
+        disappear
+        """
+        new_db = self.db
+        for key in other.db:
+            new_db[key] = other.db.get(key)
+
+        other.delete_database()
+        self.db = new_db
+
+
     def __str__(self):
         return "<Key-Value DataBase: " + str(len(self.db)) + " row(s)>"
+
+
+def deleteDataBase(dirc, name):
+    try:
+        import os
+        if dirc == "":
+            os.remove(name+".py")
+            return
+        os.remove(dirc+'\\'+name+'.py')
+        print(f"Database {name} has been deleted.")
+    except FileNotFoundError:
+        raise FileNotFoundError("No such a file or directory")
