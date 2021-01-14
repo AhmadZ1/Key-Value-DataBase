@@ -4,8 +4,8 @@ import sys
 
 # To initialize the DataBase, you need to specify the path that you want it to be in, and give it a name.
 # If you haven't created the database yet, simply create it by calling this create() method, and a database 
-# with the name you gave it before will be created.
-# If you have already created a database with the name you passed, you need to load it by this load() method.
+# with the name you gave it before will be created, then you need to call load() method.
+# If you have already created a database with the name you passed, you just need to call load() method.
 # To add keys and values to your database, simply call add_key(key, value) method.
 # To override an existing key, use override(key, new_value) method.
 # To delete a key from the database, call delete_key(key) method.
