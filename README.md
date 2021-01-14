@@ -35,10 +35,12 @@ However, you can enable autosaving by calling enable_autosave(), and you can dis
 Note that enabling autosave is not recommended for big databases (rows >= 10000), manual saving it better.
 
 
-# If you want to create the database in the current folder, just put the path as empty string and set current_directory to True, for example:
-# db = DataBase("", "MyDb", current_directory=True)
+If you want to create the database in the current folder, just put the path as empty string and set current_directory to True, for example:
+db = DataBase("", "MyDb", current_directory=True)
 
 You can use this database to store many things, like my_db.add_key("username", ["password", "email", "location", "id"]) or many other uses.
 
+# pip command to download from cmd/terminal: pip install keyvalue-database
+# To import after installation, do import kv_database
+# To upgrade the current virsion you have: pip install --upgrade keyvalue-database
 
-pip command to download from cmd/terminal: pip install keyvalue-database
