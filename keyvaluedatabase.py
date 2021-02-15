@@ -149,7 +149,7 @@ class DataBase:
 
     def isfound(self, key):
         """Returns a bool if the key is found in the database or not"""
-        return self.db.has_key(key)
+        return (key in self.db)
 
 
     def clear_all(self):
