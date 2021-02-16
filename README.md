@@ -19,6 +19,10 @@ To get the value of a certain key, use get(key) method.
 
 To get values of more than one key, use get_keys(keys), i.e. get_keys("key1", "key2", "key3").
 
+To get all keys of the database use your_database.keys().
+
+To get all the values in the database use your_database.values().
+
 To check if a key is found in database or not, use isfound(key) method.
 
 To clear all the rows in the database, use clear_all().
