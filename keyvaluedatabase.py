@@ -145,7 +145,17 @@ class DataBase:
             sub_db[key] = self.db[key]
 
         return sub_db
+    
+    
+    def keys(self):
+        """Returns the list of keys found in the database"""
+        return self.db.keys();
 
+
+    def values(self):
+        """Returns the list of values in the database"""
+        return self.db.values();
+    
 
     def isfound(self, key):
         """Returns a bool if the key is found in the database or not"""
